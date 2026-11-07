@@ -1,0 +1,23 @@
+#!/usr/bin/env bash
+set -euo pipefail
+export PATH="$HOME/.local/bin:$PATH"
+if [[ "${1:-}" == --help ]]; then
+  echo 'Uso: ide [carpeta] [shell|codex|claude] (predeterminado: codex)'
+  exit 0
+fi
+command -v kitty >/dev/null || { echo 'Falta Kitty.' >&2; exit 1; }
+command -v nvim >/dev/null || { echo 'Falta Neovim.' >&2; exit 1; }
+export NND_IDE_PROJECT_DIR
+NND_IDE_PROJECT_DIR="$(cd -- "${1:-.}" && pwd -P)"
+assistant="${2:-codex}"
+case "$assistant" in
+  shell) session=ide-shell.session ;;
+  codex|claude)
+    session="ide-$assistant.session"
+    if ! command -v "$assistant" >/dev/null; then
+      echo "$assistant no está instalado; se abrirá una terminal libre." >&2
+      session=ide-shell.session
+    fi ;;
+  *) echo 'Elige shell, codex o claude.' >&2; exit 1 ;;
+esac
+exec kitty --detach --directory "$NND_IDE_PROJECT_DIR" --session "${XDG_CONFIG_HOME:-$HOME/.config}/kitty/$session"

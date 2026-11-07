@@ -1,0 +1,5 @@
+new_tab Editor
+launch --cwd "$NND_IDE_PROJECT_DIR" nvim .
+new_tab Terminal
+launch --cwd "$NND_IDE_PROJECT_DIR"
+focus_tab 0
