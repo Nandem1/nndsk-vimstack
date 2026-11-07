@@ -1,108 +1,70 @@
-# nndsk-vimstack — Mi IDE de terminal
+# nndsk-vimstack
 
-Kitty + LazyVim con una pestaña independiente para Codex, Claude Code o el shell.
-Incluye el tema oscuro Noctalia, diff de Git y recarga de archivos modificados externamente
-cuando el buffer no tiene cambios pendientes. Configuración guardada el 7 de noviembre de 2026.
+Kitty y LazyVim con tema Noctalia, diff de Git y otra pestaña para Codex, Claude Code o una terminal.
 
-## Instalación en Linux
+## Instalación
 
-Necesitas Bash, Git, Kitty, Neovim compatible con LazyVim, ripgrep, fd, LazyGit,
-Tree-sitter CLI y una fuente FantasqueSansM Nerd Font Mono. Para instalar plugins y
-herramientas de lenguajes necesitas conexión a Internet; algunos requieren compilador C y Node.js/npm.
-El instalador copia configuraciones; no instala programas del sistema ni requiere sudo.
-
-En CachyOS/Arch, instala las dependencias con el gestor de paquetes:
+En CachyOS o Arch:
 
 ```bash
 sudo pacman -S --needed git kitty neovim ripgrep fd lazygit tree-sitter-cli ttf-fantasque-nerd base-devel nodejs npm
-```
-
-Clona este repositorio y ejecuta:
-
-```bash
 git clone https://github.com/Nandem1/nndsk-vimstack.git
 cd nndsk-vimstack
-./install.sh --dry-run
 ./install.sh
 ```
 
-Si `ide` no está en PATH, agrega `export PATH="$HOME/.local/bin:$PATH"` al archivo
-`~/.bashrc` o `~/.zshrc` según tu shell. Puedes usar directamente `~/.local/bin/ide`.
+Usa `./install.sh --dry-run` para ver los destinos antes de instalar. En otras distribuciones, instala las mismas dependencias con tu gestor de paquetes.
 
-Abre Neovim con conexión a Internet para descargar los plugins. Ejecuta `:Lazy restore`
-para aplicar las revisiones guardadas en `lazy-lock.json`, reinicia Neovim y revisa `:checkhealth`.
-Los binarios del sistema y los servidores de lenguaje no están fijados por ese lockfile.
+Agrega `~/.local/bin` a tu PATH. En el primer inicio, Neovim necesita Internet para descargar plugins. Ejecuta `:Lazy restore` para usar las versiones guardadas y reinicia el editor.
 
-Codex y Claude Code son opcionales: instálalos y autentícate por separado según sus
-instrucciones oficiales. El repositorio no incluye sesiones, claves ni credenciales.
-Si el asistente seleccionado no está instalado, se abre un shell libre.
+Instala y autentica Codex o Claude Code por separado. Si el asistente no está instalado, el lanzador abre una terminal.
 
 ## Uso
 
 ```bash
-ide ~/Projects/mi-proyecto          # Editor + Codex
-ide ~/Projects/mi-proyecto claude   # Editor + Claude Code
-ide ~/Projects/mi-proyecto shell    # Editor + terminal libre
+ide .          # LazyVim + Codex
+ide . claude   # LazyVim + Claude Code
+ide . shell    # LazyVim + terminal
 ```
 
-Dentro de Kitty puedes abrir más pestañas y ejecutar `claude`, `codex` u otro comando.
-Guarda el archivo antes de pedir a un asistente que lo modifique. LazyVim comprueba cambios
-externos al recuperar el foco o entrar al buffer; no reemplaza silenciosamente tus ediciones pendientes.
+Guarda tus archivos antes de pedir cambios al asistente. LazyVim recarga los cambios externos si no tienes ediciones pendientes.
 
 ## Atajos
 
-### Kitty: pestañas de terminal
+### Kitty
 
 | Teclas | Acción |
 |---|---|
-| Ctrl + Shift + T | Nueva terminal en el directorio actual |
-| Ctrl + Shift + ← / → | Pestaña anterior / siguiente |
+| Ctrl + Shift + T | Abrir terminal en otra pestaña |
+| Ctrl + Shift + ← / → | Cambiar de pestaña |
 | Ctrl + Shift + 1 / 2 / 3 | Ir a esa pestaña |
 | Ctrl + Shift + Q | Cerrar pestaña |
 
-### LazyVim: primero Esc
+### LazyVim
 
-Las teclas separadas por una flecha se pulsan en secuencia. Mayúsculas requieren Shift.
+Pulsa Esc primero. Las flechas indican teclas en secuencia; las mayúsculas requieren Shift.
 
 | Teclas | Acción |
 |---|---|
-| Espacio y esperar | Ver menú de atajos |
-| Espacio → e | Abrir/cerrar explorador |
-| Ctrl + h / j / k / l | Panel izquierdo / inferior / superior / derecho |
-| Shift + H / L | Archivo anterior / siguiente |
-| Espacio → b → d | Cerrar buffer |
+| Espacio y esperar | Ver atajos |
+| Espacio → e | Abrir o cerrar explorador |
+| Ctrl + h / j / k / l | Ir al panel izquierdo / inferior / superior / derecho |
+| Shift + H / L | Cambiar de archivo |
+| Espacio → b → d | Cerrar archivo |
 | Espacio → Espacio | Buscar archivo |
 | Espacio → / | Buscar texto |
-| Espacio → f → t | Terminal integrada del proyecto |
-| Espacio → g → g | LazyGit |
-| Espacio → g → D | Diff del proyecto |
-| Espacio → g → Q | Cerrar diff |
-| Espacio → g → H | Historial del archivo |
+| Espacio → f → t | Abrir terminal integrada |
+| Espacio → g → g | Abrir LazyGit |
+| Espacio → g → D / Q / H | Abrir diff / cerrar diff / ver historial |
 | i / Esc | Escribir / navegar |
 | :w / :q y Enter | Guardar / salir |
-| gt / gT | Siguiente/anterior pestaña de Neovim creada con :tabnew |
 
-El diff y el historial requieren un repositorio Git. Guarda con `:w` para incluir tus
-ediciones en el diff del disco. En una terminal integrada, Ctrl + \\ y después Ctrl + n
-vuelve al modo normal; `i` permite escribir otra vez.
+El diff requiere Git y muestra los cambios guardados. Para salir del modo de escritura de la terminal integrada, pulsa Ctrl + \ y después Ctrl + n.
 
-## Archivos y respaldos
+## Configuración y respaldos
 
-- `config/nvim/`: configuración de LazyVim y versiones de plugins.
-- `config/kitty/`: tema, atajos y sesiones portables.
-- `bin/ide`: lanzador que usa los ejecutables de PATH.
-- `install.sh`: instalador con respaldos; respeta XDG_CONFIG_HOME y XDG_DATA_HOME.
+Edita `config/nvim/`, `config/kitty/` o `bin/ide` y vuelve a ejecutar el instalador. Los cambios hechos en la configuración instalada deben copiarse al repositorio antes de subirlos.
 
-Cada instalación mueve la configuración previa de Neovim, los archivos administrados de
-Kitty y el lanzador existente a `~/.local/share/terminal-ide/backups/FECHA-SUFIJO/`
-(o la ruta correspondiente a XDG_DATA_HOME). Conserva los demás archivos de Kitty.
-Para volver atrás, cierra el editor, mueve la configuración nueva a otra carpeta y restaura
-`nvim`, los archivos de `kitty/` y `bin/ide` del respaldo a sus destinos originales.
-Si no existía una configuración anterior, no habrá una copia de ella en el respaldo.
+El instalador respalda los archivos que reemplaza en `~/.local/share/terminal-ide/backups/`. Para restaurarlos, cierra el editor y devuelve los archivos del respaldo a sus rutas originales. Respeta `XDG_CONFIG_HOME` y `XDG_DATA_HOME` si están definidos.
 
-Editar los archivos instalados no actualiza este repositorio automáticamente: copia tus
-cambios a `config/` o `bin/`, revisa `git diff`, crea un commit y súbelo a GitHub.
-El tema queda guardado como copia estática; no requiere instalar el escritorio Noctalia.
-
-La configuración inicial de Neovim deriva de LazyVim Starter; su licencia se conserva en
-`config/nvim/LICENSE`.
+La configuración de Neovim deriva de LazyVim Starter. Su [licencia](config/nvim/LICENSE) está incluida.
